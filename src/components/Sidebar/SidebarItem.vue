@@ -1,16 +1,19 @@
 <template>
-  <el-submenu :index="currentPath" v-if="children">
-    <Item v-bind="meta" />
-    <sidebar-item
-      v-for="child in children"
-      :key="child.path"
-      v-bind="child"
-      :parent="currentPath"
-    />
-  </el-submenu>
-  <el-menu-item :index="currentPath" v-else>
-    <Item v-bind="meta" />
-  </el-menu-item>
+  <div v-if="!hidden">
+    <el-submenu v-if="hasVisibleChild(children)" :index="currentPath">
+      <Item v-bind="meta" />
+      <sidebar-item
+        v-for="child in children"
+        v-bind="child"
+        :key="child.path"
+        :parent="currentPath"
+      />
+    </el-submenu>
+
+    <el-menu-item v-else :index="currentPath">
+      <Item v-bind="meta" />
+    </el-menu-item>
+  </div>
 </template>
 
 <script>
@@ -26,6 +29,7 @@ export default {
     name: String,
     children: Array,
     meta: Object,
+    hidden: Boolean,
     parent: String // 父级路径
   },
   computed: {
@@ -36,6 +40,10 @@ export default {
   methods: {
     resolvePath(parent, path) {
       return /^\//.test(path) ? path : `${parent}/${path}`;
+    },
+    hasVisibleChild(children) {
+      if (!Array.isArray(children)) return false;
+      return children.some(child => !child.hidden);
     }
   }
 };
