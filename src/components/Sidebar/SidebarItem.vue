@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!hidden">
+  <div v-if="visible">
     <el-submenu v-if="hasVisibleChild(children)" :index="currentPath">
       <Item v-bind="meta" />
       <sidebar-item
@@ -29,21 +29,26 @@ export default {
     name: String,
     children: Array,
     meta: Object,
-    hidden: Boolean,
     parent: String // 父级路径
   },
   computed: {
     currentPath() {
       return this.resolvePath(this.parent, this.path);
+    },
+    visible() {
+      return this.isVisible(this.meta);
     }
   },
   methods: {
     resolvePath(parent, path) {
       return /^\//.test(path) ? path : `${parent}/${path}`;
     },
+    isVisible(meta) {
+      return !(meta && meta.hidden);
+    },
     hasVisibleChild(children) {
       if (!Array.isArray(children)) return false;
-      return children.some(child => !child.hidden);
+      return children.some(child => this.isVisible(child.meta));
     }
   }
 };

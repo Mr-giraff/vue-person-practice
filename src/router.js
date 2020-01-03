@@ -4,6 +4,7 @@ import Home from "./views/Home.vue";
 import Child from "./views/Child";
 
 import BasicLayout from "@/layout/BasicLayout";
+import BlankLayout from "@/layout/BlankLayout";
 
 Vue.use(Router);
 
@@ -34,7 +35,8 @@ export const routes = [
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import("./views/About.vue"),
+        // component: () => import("./views/About.vue"),
+        component: BlankLayout,
         redirect: { name: "child2" },
         meta: {
           title: "about2",
@@ -45,10 +47,10 @@ export const routes = [
             path: "child2",
             name: "child2",
             component: Child,
-            hidden: true,
             meta: {
               title: "child2",
-              icon: "child2"
+              icon: "child2",
+              hidden: true
             }
           }
         ]

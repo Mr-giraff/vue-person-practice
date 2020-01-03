@@ -14,10 +14,12 @@ export default {
   props: {
     menus: Array
   },
-  data() {
-    return {
-      activeIndex: this.$route.path
-    };
+  computed: {
+    activeIndex() {
+      // 子级不可见时，使用父级路径
+      const { path, meta, parent } = [...this.$route.matched].pop();
+      return meta && meta.hidden ? parent.path : path;
+    }
   }
 };
 </script>
