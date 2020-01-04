@@ -52,6 +52,16 @@ export const routes = [
               icon: "child2",
               hidden: true
             }
+          },
+          {
+            path: "append/:id",
+            name: "child3",
+            component: Child,
+            meta: {
+              title: "child3",
+              icon: "child3",
+              hidden: true
+            }
           }
         ]
       }
