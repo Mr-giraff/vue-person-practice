@@ -12,18 +12,6 @@ export default {
       default: ""
     }
   },
-  // render(h, context) {
-  //   const { icon, title } = context.props;
-  //   const vnodes = [];
-  //   if (icon) {
-  //     vnodes.push(<i class={icon} />);
-  //   }
-
-  //   if (title) {
-  //     vnodes.push(<span>{title}</span>);
-  //   }
-  //   return vnodes;
-  // }
   render(h, context) {
     const { icon, title } = context.props;
     const vnodes = [];
