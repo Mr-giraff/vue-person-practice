@@ -6,7 +6,7 @@
         v-for="child in children"
         v-bind="child"
         :key="child.path"
-        :parent="currentPath"
+        :parentPath="currentPath"
       />
     </el-submenu>
 
@@ -18,6 +18,8 @@
 
 <script>
 import Item from "./Item";
+import { isVisible } from "@/utils/route";
+
 export default {
   name: "SidebarItem",
   components: {
@@ -29,26 +31,23 @@ export default {
     name: String,
     children: Array,
     meta: Object,
-    parent: String // 父级路径
+    parentPath: String // 父级路径
   },
   computed: {
     currentPath() {
-      return this.resolvePath(this.parent, this.path);
+      return this.resolvePath(this.parentPath, this.path);
     },
     visible() {
-      return this.isVisible(this.meta);
+      return isVisible(this.meta);
     }
   },
   methods: {
-    resolvePath(parent, path) {
-      return /^\//.test(path) ? path : `${parent}/${path}`;
-    },
-    isVisible(meta) {
-      return !(meta && meta.hidden);
+    resolvePath(parentPath, path) {
+      return /^\//.test(path) ? path : `${parentPath}/${path}`;
     },
     hasVisibleChild(children) {
       if (!Array.isArray(children)) return false;
-      return children.some(child => this.isVisible(child.meta));
+      return children.some(child => isVisible(child.meta));
     }
   }
 };
