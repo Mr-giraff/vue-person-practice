@@ -11,14 +11,23 @@ Vue.use(Router);
 export const routes = [
   {
     path: "/",
+    redirect: "/home",
+    component: BlankLayout
+    // meta: {
+    //   title: "home",
+    //   icon: "home"
+    // }
+  },
+  {
+    path: "/home",
     name: "home",
     component: Home,
     meta: {
       title: "home",
-      icon: "home"
+      icon: "home",
+      hidden: true
     }
   },
-
   {
     path: "/test",
     name: "test",
@@ -50,11 +59,12 @@ export const routes = [
             meta: {
               title: "child2",
               icon: "child2",
-              hidden: true
+              hidden: true,
+              hideBreadcrumb: true
             }
           },
           {
-            path: "append/:id",
+            path: ":id",
             name: "child3",
             component: Child,
             meta: {

@@ -6,6 +6,7 @@
         <sidebar :menus="menus" />
       </el-aside>
       <el-main>
+        <breadcrumb />
         <router-view />
       </el-main>
     </el-container>
@@ -14,11 +15,13 @@
 
 <script>
 import Sidebar from "@/components/Sidebar";
+import Breadcrumb from "@/components/Breadcrumb";
 import { isVisible, createRouteMap } from "@/utils/route";
 
 export default {
   components: {
-    Sidebar
+    Sidebar,
+    Breadcrumb
   },
   data() {
     return {

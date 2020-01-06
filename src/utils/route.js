@@ -2,6 +2,14 @@ export function isVisible(meta) {
   return !(meta && meta.hidden);
 }
 
+export function isVisibleBreadcrumb(meta) {
+  return meta && meta.title && meta.hideBreadcrumb !== true;
+}
+
+export function isVisibleWholeBreadcrumb(meta) {
+  return !(meta && meta.hideWholeBreadcrumb);
+}
+
 /**
  *
  * @param {Object[]} routes
