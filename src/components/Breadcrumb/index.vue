@@ -12,6 +12,7 @@
 
 <script>
 import { isVisibleBreadcrumb, isVisibleWholeBreadcrumb } from "@/utils/route";
+import _ from "lodash";
 
 export default {
   data() {
@@ -34,9 +35,23 @@ export default {
   methods: {
     getBreadcrumbs() {
       // hideBreadcrumb
-      this.breadcrumbs = this.$route.matched.filter(item =>
+      const breadcrumbs = this.$route.matched.filter(item =>
         isVisibleBreadcrumb(item.meta)
       );
+
+      // dynamicBreadcrumb
+      this.breadcrumbs = breadcrumbs.map(item => {
+        item.meta.title = this.getTitle(item.meta, this.$route);
+        return item;
+      });
+    },
+
+    getTitle({ title, dynamicBreadcrumb }, route) {
+      if (dynamicBreadcrumb) {
+        const keys = dynamicBreadcrumb.split(".");
+        title = _.get(route, keys);
+      }
+      return title;
     }
   },
   created() {

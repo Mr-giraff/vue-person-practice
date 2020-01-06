@@ -70,7 +70,8 @@ export const routes = [
             meta: {
               title: "child3",
               icon: "child3",
-              hidden: true
+              hidden: true,
+              dynamicBreadcrumb: "params.id"
             }
           }
         ]
