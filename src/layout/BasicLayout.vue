@@ -1,6 +1,8 @@
 <template>
   <el-container>
-    <el-header>Header</el-header>
+    <el-header>
+      <nav-header :logo="logo" :title="title" />
+    </el-header>
     <el-container>
       <el-aside width="200px">
         <sidebar />
@@ -14,13 +16,22 @@
 </template>
 
 <script>
+import NavHeader from "@/components/NavHeader";
 import Sidebar from "@/components/Sidebar";
 import Breadcrumb from "@/components/Breadcrumb";
 
 export default {
   components: {
+    NavHeader,
     Sidebar,
     Breadcrumb
+  },
+
+  data() {
+    return {
+      logo: require("@/assets/logo.png"),
+      title: "AI station"
+    };
   }
 };
 </script>
