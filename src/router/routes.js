@@ -13,28 +13,24 @@
     icon: 'svg-name'             the icon show in the sidebar
     noCache: true                if set true, the page will no be cached(default is false)
     affix: true                  if set true, the tag will affix in the tags-view
-    hideBreadcrumb: false        if set true, the item will hidden in breadcrumb(default is false)
     activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
     hidden: true                 if set true, item will not show in the sidebar(default is false)
+    hideBreadcrumb: false        if set true, the item will hidden in breadcrumb(default is false)
     hideWholeBreadcrumb: false   if set true, the whole breadcrumb will be hidden(default is false)
     dynamicBreadcrumb: 'params.id | query.id'  according to config. dynamic set the breadcrumb title
   }
  */
 
-import Vue from "vue";
-import Router from "vue-router";
-import Home from "./views/Home.vue";
-import Child from "./views/Child";
+import Home from "../views/Home.vue";
+import Child from "../views/Child";
 
 import BasicLayout from "@/layout/BasicLayout";
 import BlankLayout from "@/layout/BlankLayout";
 
-Vue.use(Router);
-
 export const routes = [
   {
     path: "/",
-    redirect: "/home",
+    redirect: "/dashboard",
     component: BlankLayout
     // meta: {
     //   title: "home",
@@ -52,8 +48,8 @@ export const routes = [
     }
   },
   {
-    path: "/test",
-    name: "test",
+    path: "/dashboard",
+    name: "dashboard",
     component: BasicLayout,
     meta: {
       title: "dashboard",
@@ -102,9 +98,3 @@ export const routes = [
     ]
   }
 ];
-
-export default new Router({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes
-});
