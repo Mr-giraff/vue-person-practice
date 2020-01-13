@@ -35,6 +35,10 @@ export default {
       return normalizePath(path, parent);
     },
     getMenus() {
+      return this.$router.options.routes.filter(item => isVisible(item.meta));
+    },
+    // 获取某个模块下的路由配置
+    getModuleRoute() {
       const { pathMap } = createRouteMap(this.$router.options.routes);
 
       // 从上往下找到第一个可见的路由项
