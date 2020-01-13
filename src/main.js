@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import "./plugins/elementUi";
-
+import "@/utils/register";
 import "@/styles/index.less"; // global css
 
 Vue.config.productionTip = false;
