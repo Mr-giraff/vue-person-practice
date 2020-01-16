@@ -51,6 +51,12 @@ export const componentLibMapping = {
   form: "el-form"
 };
 
+const toString = Object.prototype.toString;
+
+export function isFunction(arg) {
+  return toString.call(arg) === "[object Function]";
+}
+
 function generateInputComponent(h, formData = {}, obj, vm) {
   const key = obj.key ? obj.key : "";
   let children = [];

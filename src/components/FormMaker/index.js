@@ -1,4 +1,4 @@
-import componentObj, { componentLibMapping } from "./utils";
+import componentObj, { componentLibMapping, isFunction } from "./utils";
 
 export default {
   props: {
@@ -19,6 +19,10 @@ export default {
     }
 
     const components = options.formItems.map(item => {
+      if (isFunction(item.visible) && !item.visible(formData)) {
+        return null;
+      }
+
       let func = componentObj[item.type];
       let subComponent = func ? func.call(this, h, formData, item, this) : null;
       let component = componentObj.formItem(h, item, subComponent);
