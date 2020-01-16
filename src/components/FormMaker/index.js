@@ -2,6 +2,7 @@ import componentObj, { componentLibMapping, isFunction } from "./utils";
 
 export default {
   props: {
+    instance: Object,
     model: {
       type: Object,
       required: true
@@ -10,6 +11,9 @@ export default {
       type: Object,
       required: true
     }
+  },
+  mounted() {
+    this.$emit("update:instance", this.$refs.form); // 暴露 form 实例
   },
   render(h) {
     const options = this.options;
