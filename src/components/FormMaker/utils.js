@@ -640,7 +640,8 @@ function generateColComponent(h, obj, component) {
         sm: obj.sm,
         md: obj.md,
         lg: obj.lg
-      }
+      },
+      key: obj.key
     },
     [component]
   );
