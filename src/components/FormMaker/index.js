@@ -3,6 +3,7 @@ import componentObj, { componentLibMapping, isFunction } from "./utils";
 export default {
   props: {
     instance: Object,
+    formItems: Array,
     model: {
       type: Object,
       required: true
@@ -16,13 +17,14 @@ export default {
     this.$emit("update:instance", this.$refs.form); // 暴露 form 实例
   },
   render(h) {
-    const options = this.options;
-    const formData = this.model;
-    if (!options.formItems) {
+    const formItems = this.formItems;
+    if (!formItems) {
       return h("div");
     }
 
-    const components = options.formItems.map(item => {
+    const options = this.options;
+    const formData = this.model;
+    const components = formItems.map(item => {
       if (isFunction(item.visible) && !item.visible(formData)) {
         return null;
       }

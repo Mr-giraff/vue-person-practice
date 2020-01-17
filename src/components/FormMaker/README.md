@@ -12,10 +12,11 @@
 - generateColComponent - 增加 key 属性，解决 Vue-DOM 复用的bug
   - ref：https://cn.vuejs.org/v2/api/#key
 - 增加 instance 属性，提供 form 实例给父级
+- formItems 从 props-options 中独立出来，命名为 formItems
 
 ### props
-- instance
 - model
+- instance
+- formItems
 - options
-  - formItems
   - formProps
