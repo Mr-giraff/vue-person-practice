@@ -20,3 +20,6 @@
 - formItems
 - options
   - formProps
+
+### 备注
+- events 属性中的事件想要使用 this 作用域，必须使用在 vue-methods 中定义好的 method。出于这点考虑，不再通过支持 children 类型为函数的形式来实现表单项之间 children 的动态配置，通过 events 已经可以满足要求
