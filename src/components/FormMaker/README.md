@@ -47,3 +47,5 @@ ref：
 * https://vuejs.org/v2/guide/render-function.html#The-Data-Object-In-Depth
 * https://github.com/ElemeFE/element/blob/v2.13.0/packages/input/src/input.vue
 
+### Feature
+1. 支持"native"修饰符

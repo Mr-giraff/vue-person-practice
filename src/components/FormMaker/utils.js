@@ -57,13 +57,40 @@ export function isFunction(arg) {
   return toString.call(arg) === "[object Function]";
 }
 
-function translateEvents(events = {}, vm) {
+/**
+ * 事件转换
+ * @param {*} events - 事件集合
+ * @param {*} vm - 外部 this 作用域
+ * @param {*} native - 是否原生事件
+ */
+function translateEvents(events = {}, vm, native = false) {
   const result = {};
   for (let event in events) {
-    result[event] = events[event].bind(vm);
+    const phrase = event.split(".");
+    const eventName = phrase.shift();
+
+    onModifiers(result, vm, native, phrase, eventName, events[event]);
   }
 
   return result;
+}
+
+/**
+ * 修饰符处理
+ * @param {*} result - 最终事件集合
+ * @param {*} vm - 外部 this 作用域
+ * @param {*} native - 是否原生事件
+ * @param {*} modifiers - 修饰符
+ * @param {*} eventName - 事件名称
+ * @param {*} listener - 事件绑定函数
+ */
+function onModifiers(result, vm, native, modifiers, eventName, listener) {
+  // native 修饰符
+  // native === true, modifiers.includes('native') === false
+  // native === false, modifiers.includes('native') === ture
+  if (native !== modifiers.includes("native")) return;
+
+  result[eventName] = listener.bind(vm);
 }
 
 function generateAdvancedConfig(formData = {}, obj, vm) {
@@ -83,6 +110,9 @@ function generateAdvancedConfig(formData = {}, obj, vm) {
           formData[key] = val;
         }
       }
+    },
+    nativeOn: {
+      ...translateEvents(obj.events, vm, true)
     },
     slot: obj.slot
   };
