@@ -87,6 +87,7 @@ function generateInputComponent(h, formData = {}, obj, vm) {
         value: key ? formData[key] : "",
         ...obj.props
       },
+      attrs: obj.props,
       style: obj.style,
       on: {
         ...translateEvents(obj.events, vm),
