@@ -12,7 +12,8 @@
         :total="100"
         layout="total, sizes, prev, pager, next, jumper"
         v-bind="pagination"
-        v-on="$listeners"
+        @current-change="onCurrentChange"
+        @size-change="onSizeChange"
       >
       </el-pagination>
     </div>
@@ -24,6 +25,16 @@ export default {
   props: {
     columns: Array,
     pagination: [Boolean, Object]
+  },
+
+  methods: {
+    onCurrentChange(currentPage) {
+      this.$emit("page-change", currentPage, this.pagination.pageSize);
+    },
+
+    onSizeChange(pageSize) {
+      this.$emit("page-change", this.pagination.currentPage, pageSize);
+    }
   }
 };
 </script>
