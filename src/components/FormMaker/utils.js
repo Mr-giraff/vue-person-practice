@@ -57,8 +57,47 @@ export function isFunction(arg) {
   return toString.call(arg) === "[object Function]";
 }
 
-function generateInputComponent(h, formData = {}, obj, vm) {
+function translateEvents(events = {}, vm) {
+  const result = {};
+  for (let event in events) {
+    result[event] = events[event].bind(vm);
+  }
+
+  return result;
+}
+
+function generateAdvancedConfig(formData = {}, obj, vm) {
   const key = obj.key ? obj.key : "";
+
+  return {
+    props: {
+      value: key ? formData[key] : "",
+      ...obj.props
+    },
+    attrs: obj.props,
+    style: obj.style,
+    on: {
+      ...translateEvents(obj.events, vm),
+      input(val) {
+        if (key) {
+          formData[key] = val;
+        }
+      }
+    },
+    slot: obj.slot
+  };
+}
+
+function generateSimpleConfig(obj) {
+  return {
+    props: obj.props ? obj.props : obj,
+    slot: obj.slot,
+    style: obj.style,
+    on: obj.events
+  };
+}
+
+function generateInputComponent(h, formData = {}, obj, vm) {
   let children = [];
 
   if (obj.children) {
@@ -82,52 +121,20 @@ function generateInputComponent(h, formData = {}, obj, vm) {
 
   return h(
     componentLibMapping.input,
-    {
-      props: {
-        value: key ? formData[key] : "",
-        ...obj.props
-      },
-      attrs: obj.props,
-      style: obj.style,
-      on: {
-        ...translateEvents(obj.events, vm),
-        input(val) {
-          if (key) {
-            formData[key] = val;
-          }
-        }
-      },
-      slot: obj.slot
-    },
+    generateAdvancedConfig(formData, obj, vm),
     children
   );
 }
 
 function generateButtonComponent(h, _, obj) {
-  return h(
-    componentLibMapping.button,
-    {
-      props: obj.props,
-      slot: obj.slot,
-      style: obj.style,
-      on: obj.events
-    },
-    [obj.text]
-  );
+  return h(componentLibMapping.button, generateSimpleConfig(obj), [obj.text]);
 }
 
 function generateButtonGroupComponent(h, _, obj) {
   const components = obj.children.map(item => {
-    return h(
-      componentLibMapping.button,
-      {
-        props: item.props ? item.props : item,
-        slot: item.slot,
-        style: item.style,
-        on: item.events
-      },
-      [item.text]
-    );
+    return h(componentLibMapping.button, generateSimpleConfig(item), [
+      item.text
+    ]);
   });
 
   return h(
@@ -207,41 +214,20 @@ function generateResetComponent(h, _, obj, vm) {
 }
 
 function generateIconComponent(h, _, obj) {
-  return h(componentLibMapping.icon, {
-    props: obj.props,
-    style: obj.style,
-    slot: obj.slot
-  });
+  return h(componentLibMapping.icon, generateSimpleConfig(obj));
 }
 
 function generateRadioComponent(h, formData = {}, obj, vm) {
-  const key = obj.key ? obj.key : "";
-
   return h(
     componentLibMapping.radio,
-    {
-      props: {
-        value: key ? formData[key] : false,
-        ...obj.props
-      },
-      style: obj.style,
-      slot: obj.slot,
-      on: {
-        ...translateEvents(obj.events, vm),
-        input(val) {
-          if (key) {
-            formData[key] = val;
-          }
-        }
-      }
-    },
+    generateAdvancedConfig(formData, obj, vm),
     [obj.text]
   );
 }
 
 function generateRadioGroupComponent(h, formData = {}, obj, vm) {
   let components = [];
-  const key = obj.key ? obj.key : "";
+
   if (obj.children) {
     components = obj.children.map(child => {
       return h(
@@ -256,54 +242,21 @@ function generateRadioGroupComponent(h, formData = {}, obj, vm) {
 
   return h(
     componentLibMapping.radioGroup,
-    {
-      props: {
-        value: key ? formData[key] : "",
-        ...obj.props
-      },
-      style: obj.style,
-      slot: obj.slot,
-      on: {
-        ...translateEvents(obj.events, vm),
-        input(val) {
-          if (key) {
-            formData[key] = val;
-          }
-        }
-      }
-    },
+    generateAdvancedConfig(formData, obj, vm),
     [components]
   );
 }
 
 function generateCheckboxComponent(h, formData = {}, obj, vm) {
-  const key = obj.key ? obj.key : "";
-
   return h(
     componentLibMapping.checkbox,
-    {
-      props: {
-        value: key ? formData[key] : "",
-        ...obj.props
-      },
-      style: obj.style,
-      slot: obj.slot,
-      on: {
-        ...translateEvents(obj.events, vm),
-        input(val) {
-          if (key) {
-            formData[key] = val;
-          }
-        }
-      }
-    },
+    generateAdvancedConfig(formData, obj, vm),
     [obj.text]
   );
 }
 
 function generateCheckboxGroupComponent(h, formData = {}, obj, vm) {
   let components = [];
-  const key = obj.key ? obj.key : "";
 
   if (obj.children) {
     components = obj.children.map(child => {
@@ -319,30 +272,14 @@ function generateCheckboxGroupComponent(h, formData = {}, obj, vm) {
 
   return h(
     componentLibMapping.checkboxGroup,
-    {
-      props: {
-        value: key ? formData[key] : [],
-        ...obj.props
-      },
-      style: obj.style,
-      slot: obj.slot,
-      on: {
-        ...translateEvents(obj.events, vm),
-        input(val) {
-          if (key) {
-            formData[key] = val;
-          }
-        }
-      }
-    },
+    generateAdvancedConfig(formData, obj, vm),
     [components]
   );
 }
 
 function generateSwitchComponent(h, formData = {}, obj, vm) {
-  const key = obj.key ? obj.key : "";
-
   let components = [];
+
   if (obj.children) {
     components = obj.children.map(item => {
       let temp;
@@ -364,29 +301,12 @@ function generateSwitchComponent(h, formData = {}, obj, vm) {
 
   return h(
     componentLibMapping.switch,
-    {
-      props: {
-        value: key ? formData[key] : false,
-        ...obj.props
-      },
-      style: obj.style,
-      slot: obj.slot,
-      on: {
-        ...translateEvents(obj.events, vm),
-        input(val) {
-          if (key) {
-            formData[key] = val;
-          }
-        }
-      }
-    },
+    generateAdvancedConfig(formData, obj, vm),
     components
   );
 }
 
 function generateSelectComponent(h, formData = {}, obj, vm) {
-  const key = obj.key ? obj.key : "";
-
   let components = [];
 
   if (obj.children) {
@@ -413,45 +333,16 @@ function generateSelectComponent(h, formData = {}, obj, vm) {
 
   return h(
     componentLibMapping.select,
-    {
-      props: {
-        value: formData[key],
-        ...obj.props
-      },
-      style: obj.style,
-      on: {
-        ...translateEvents(obj.events, vm),
-        input(val) {
-          if (key) {
-            formData[key] = val;
-          }
-        }
-      },
-      slot: obj.slot
-    },
+    generateAdvancedConfig(formData, obj, vm),
     components
   );
 }
 
 function generateSliderComponent(h, formData = {}, obj, vm) {
-  const key = obj.key ? obj.key : "";
-
-  return h(componentLibMapping.slider, {
-    props: {
-      value: formData[key],
-      ...obj.props
-    },
-    style: obj.style,
-    slot: obj.slot,
-    on: {
-      ...translateEvents(obj.events, vm),
-      input(val) {
-        if (key) {
-          formData[key] = val;
-        }
-      }
-    }
-  });
+  return h(
+    componentLibMapping.slider,
+    generateAdvancedConfig(formData, obj, vm)
+  );
 }
 
 function generateDateComponent(h, formData = {}, obj, vm) {
@@ -502,87 +393,25 @@ function generateDateComponent(h, formData = {}, obj, vm) {
 }
 
 function generateTimeComponent(h, formData = {}, obj, vm) {
-  const key = obj.key ? obj.key : "";
-
-  return h(componentLibMapping.time, {
-    props: {
-      value: key ? formData[key] : "",
-      ...obj.props
-    },
-    style: obj.style,
-    slot: obj.slot,
-    on: {
-      ...translateEvents(obj.events, vm),
-      input(val) {
-        if (key) {
-          formData[key] = val;
-        }
-      }
-    }
-  });
+  return h(componentLibMapping.time, generateAdvancedConfig(formData, obj, vm));
 }
 
 function generateCascaderComponent(h, formData = {}, obj, vm) {
-  const key = obj.key ? obj.key : "";
-
-  return h(componentLibMapping.cascader, {
-    props: {
-      value: key ? formData[key] : [],
-      ...obj.props
-    },
-    style: obj.style,
-    slot: obj.slot,
-    on: {
-      ...translateEvents(obj.events, vm),
-      input(val) {
-        if (key) {
-          formData[key] = val;
-        }
-      }
-    }
-  });
+  return h(
+    componentLibMapping.cascader,
+    generateAdvancedConfig(formData, obj, vm)
+  );
 }
 
 function generateInputNumberComponent(h, formData = {}, obj, vm) {
-  const key = obj.key ? obj.key : "";
-
-  return h(componentLibMapping.inputNumber, {
-    props: {
-      value: key ? formData[key] : null,
-      ...obj.props
-    },
-    style: obj.style,
-    slot: obj.slot,
-    on: {
-      ...translateEvents(obj.events, vm),
-      input(val) {
-        if (key) {
-          formData[key] = val;
-        }
-      }
-    }
-  });
+  return h(
+    componentLibMapping.inputNumber,
+    generateAdvancedConfig(formData, obj, vm)
+  );
 }
 
 function generateRateComponent(h, formData = {}, obj, vm) {
-  const key = obj.key ? obj.key : "";
-
-  return h(componentLibMapping.rate, {
-    props: {
-      value: key ? formData[key] : 0,
-      ...obj.props
-    },
-    slot: obj.slot,
-    style: obj.style,
-    on: {
-      ...translateEvents(obj.events, vm),
-      input(val) {
-        if (key) {
-          formData[key] = val;
-        }
-      }
-    }
-  });
+  return h(componentLibMapping.rate, generateAdvancedConfig(formData, obj, vm));
 }
 
 function generateUploadComponent(h, formData = {}, obj, vm) {
@@ -594,36 +423,14 @@ function generateUploadComponent(h, formData = {}, obj, vm) {
       return func ? func.call(vm, h, formData, item, vm) : null;
     });
   }
-  return h(
-    componentLibMapping.upload,
-    {
-      props: obj.props,
-      style: obj.style,
-      slot: obj.slot
-    },
-    components
-  );
+  return h(componentLibMapping.upload, generateSimpleConfig(obj), components);
 }
 
 function generateColorPickerComponent(h, formData = {}, obj, vm) {
-  const key = obj.key ? obj.key : "";
-
-  return h(componentLibMapping.colorPicker, {
-    props: {
-      value: key ? formData[key] : "",
-      ...obj.props
-    },
-    style: obj.style,
-    slot: obj.slot,
-    on: {
-      ...translateEvents(obj.events, vm),
-      input(val) {
-        if (key) {
-          formData[key] = val;
-        }
-      }
-    }
-  });
+  return h(
+    componentLibMapping.colorPicker,
+    generateAdvancedConfig(formData, obj, vm)
+  );
 }
 
 function generateColComponent(h, obj, component) {
@@ -665,15 +472,6 @@ function generateFormItemComponent(h, obj, component) {
     },
     [component]
   );
-}
-
-function translateEvents(events = {}, vm) {
-  const result = {};
-  for (let event in events) {
-    result[event] = events[event].bind(vm);
-  }
-
-  return result;
 }
 
 export default componentObj;
