@@ -1,4 +1,8 @@
-import componentObj, { componentLibMapping, isFunction } from "./utils";
+import componentObj, {
+  componentLibMapping,
+  isFunction,
+  translateEvents
+} from "./utils";
 
 export default {
   props: {
@@ -66,6 +70,8 @@ export default {
           model: formData,
           ...options.formProps
         },
+        on: translateEvents(options.formEvents, this),
+        nativeOn: translateEvents(options.formEvents, this, true),
         class: "vue-generate-form"
       },
       [

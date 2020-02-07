@@ -102,7 +102,7 @@ function onModifiers(result, vm, native, modifiers, eventName, listener) {
  * @param {*} vm - 外部 this 作用域
  * @param {*} native - 是否原生事件
  */
-function translateEvents(events = {}, vm, native = false) {
+export function translateEvents(events = {}, vm, native = false) {
   const result = {};
   for (let event in events) {
     const phrase = event.split(".");
