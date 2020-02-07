@@ -124,6 +124,7 @@ function generateAdvancedConfig(formData = {}, obj, vm) {
     },
     attrs: obj.props,
     style: obj.style,
+    slot: obj.slot,
     on: {
       ...translateEvents(obj.events, vm),
       input(val) {
@@ -132,10 +133,7 @@ function generateAdvancedConfig(formData = {}, obj, vm) {
         }
       }
     },
-    nativeOn: {
-      ...translateEvents(obj.events, vm, true)
-    },
-    slot: obj.slot
+    nativeOn: translateEvents(obj.events, vm, true)
   };
 }
 
