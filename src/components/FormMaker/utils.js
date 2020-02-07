@@ -57,22 +57,23 @@ export function isFunction(arg) {
   return toString.call(arg) === "[object Function]";
 }
 
-/**
- * 事件转换
- * @param {*} events - 事件集合
- * @param {*} vm - 外部 this 作用域
- * @param {*} native - 是否原生事件
- */
-function translateEvents(events = {}, vm, native = false) {
-  const result = {};
-  for (let event in events) {
-    const phrase = event.split(".");
-    const eventName = phrase.shift();
+function onNativeEvent(modifiers, listener) {
+  return event => {
+    if (modifiers.includes("stop")) {
+      event.stopPropagation();
+    }
 
-    onModifiers(result, vm, native, phrase, eventName, events[event]);
-  }
+    if (modifiers.includes("prevent")) {
+      event.preventDefault();
+    }
 
-  return result;
+    if (modifiers.includes("self") && event.target !== event.currentTarget)
+      return;
+
+    if (modifiers.includes("enter") && event.keyCode !== 13) return;
+
+    listener(event);
+  };
 }
 
 /**
@@ -90,7 +91,27 @@ function onModifiers(result, vm, native, modifiers, eventName, listener) {
   // native === false, modifiers.includes('native') === ture
   if (native !== modifiers.includes("native")) return;
 
-  result[eventName] = listener.bind(vm);
+  const func = native ? onNativeEvent(modifiers, listener) : listener;
+
+  result[eventName] = func.bind(vm);
+}
+
+/**
+ * 事件转换
+ * @param {*} events - 事件集合
+ * @param {*} vm - 外部 this 作用域
+ * @param {*} native - 是否原生事件
+ */
+function translateEvents(events = {}, vm, native = false) {
+  const result = {};
+  for (let event in events) {
+    const phrase = event.split(".");
+    const eventName = phrase.shift();
+
+    onModifiers(result, vm, native, phrase, eventName, events[event]);
+  }
+
+  return result;
 }
 
 function generateAdvancedConfig(formData = {}, obj, vm) {
