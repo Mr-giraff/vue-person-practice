@@ -114,8 +114,9 @@ function translateEvents(events = {}, vm, native = false) {
   return result;
 }
 
-function generateAdvancedConfig(formData = {}, obj, vm) {
+function generateAdvancedConfig(formData = {}, obj, vm, onInput) {
   const key = obj.key ? obj.key : "";
+  const input = onInput ? onInput : val => key && (formData[key] = val);
 
   return {
     props: {
@@ -127,11 +128,7 @@ function generateAdvancedConfig(formData = {}, obj, vm) {
     slot: obj.slot,
     on: {
       ...translateEvents(obj.events, vm),
-      input(val) {
-        if (key) {
-          formData[key] = val;
-        }
-      }
+      input
     },
     nativeOn: translateEvents(obj.events, vm, true)
   };
@@ -397,48 +394,42 @@ function generateSliderComponent(h, formData = {}, obj, vm) {
 function generateDateComponent(h, formData = {}, obj, vm) {
   const key = obj.key ? obj.key : "";
   const type = obj.props.type;
-  return h(componentLibMapping.date, {
-    props: {
-      value: key ? formData[key] : "",
-      ...obj.props
-    },
-    style: obj.style,
-    slot: obj.slot,
-    on: {
-      ...translateEvents(obj.events, vm),
-      input(date) {
-        if (key) {
-          if (type.includes("datetime")) {
-            if (Array.isArray(date)) {
-              formData[key] = date
-                ? date.map(item =>
-                    item
-                      ? item.toLocaleDateString() +
-                        " " +
-                        item.toTimeString().split(" ")[0]
-                      : ""
-                  )
-                : [];
-            } else {
-              formData[key] = date
-                ? date.toLocaleDateString() +
-                  " " +
-                  date.toTimeString().split(" ")[0]
-                : "";
-            }
-          } else {
-            if (Array.isArray(date)) {
-              formData[key] = date
-                ? date.map(item => (item ? item.toLocaleDateString() : ""))
-                : [];
-            } else {
-              formData[key] = date ? date.toLocaleDateString() : "";
-            }
-          }
+  const onInput = date => {
+    if (key) {
+      if (type.includes("datetime")) {
+        if (Array.isArray(date)) {
+          formData[key] = date
+            ? date.map(item =>
+                item
+                  ? item.toLocaleDateString() +
+                    " " +
+                    item.toTimeString().split(" ")[0]
+                  : ""
+              )
+            : [];
+        } else {
+          formData[key] = date
+            ? date.toLocaleDateString() +
+              " " +
+              date.toTimeString().split(" ")[0]
+            : "";
+        }
+      } else {
+        if (Array.isArray(date)) {
+          formData[key] = date
+            ? date.map(item => (item ? item.toLocaleDateString() : ""))
+            : [];
+        } else {
+          formData[key] = date ? date.toLocaleDateString() : "";
         }
       }
     }
-  });
+  };
+
+  return h(
+    componentLibMapping.date,
+    generateAdvancedConfig(formData, obj, vm, onInput)
+  );
 }
 
 function generateTimeComponent(h, formData = {}, obj, vm) {
