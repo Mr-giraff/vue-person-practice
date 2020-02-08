@@ -14,6 +14,7 @@
     noCache: true                if set true, the page will no be cached(default is false)
     affix: true                  if set true, the tag will affix in the tags-view
     activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
+    blank: true                  if set true, item will show the BlankLayout(default is false)
     hidden: true                 if set true, item will not show in the sidebar(default is false)
     hideBreadcrumb: false        if set true, the item will hidden in breadcrumb(default is false)
     hideWholeBreadcrumb: false   if set true, the whole breadcrumb will be hidden(default is false)

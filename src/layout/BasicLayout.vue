@@ -4,13 +4,16 @@
       <nav-header :logo="logo" :title="title" />
     </el-header>
     <el-container>
-      <el-aside width="200px">
-        <sidebar />
-      </el-aside>
-      <el-main>
-        <breadcrumb />
-        <router-view />
-      </el-main>
+      <router-view v-if="$route.meta.blank" />
+      <template v-else>
+        <el-aside width="200px">
+          <sidebar />
+        </el-aside>
+        <el-main>
+          <breadcrumb />
+          <router-view />
+        </el-main>
+      </template>
     </el-container>
   </el-container>
 </template>
