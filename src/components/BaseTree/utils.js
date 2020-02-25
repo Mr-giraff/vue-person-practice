@@ -32,7 +32,7 @@ export function saveExpandedKeys(nodesMap) {
  * @param {Object} nodesMap - {key:node}
  * @param {Array} expandedKeys - [1]
  */
-export function restoreExpandedKeys(nodesMap, expandedKeys) {
+export function restoreExpandedKeys(nodesMap, expandedKeys = []) {
   Object.values(nodesMap).forEach(node => (node.expanded = false));
   expandedKeys.forEach(
     expandedKey => ((nodesMap[expandedKey] || {}).expanded = true)

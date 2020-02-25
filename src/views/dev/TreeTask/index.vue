@@ -1,25 +1,17 @@
 <template>
   <div class="tree-task">
     <search-toolbar @search="onSearch" />
-    <el-tree
+    <base-tree
       ref="tree"
-      node-key="id"
       :data="nodes"
+      :filterText="filterText"
       :render-content="renderContent"
-      :filter-node-method="onFilterNode"
     />
   </div>
 </template>
 
 <script type="text/jsx">
 import { findValue } from "utils/array";
-import {
-  searchStart,
-  searchEnd,
-  saveExpandedKeys,
-  restoreExpandedKeys
-} from "@/utils/tree";
-
 import { taskTree } from "./data/tree";
 import { FILETYPE } from "./data/options";
 import SearchToolbar from "../components/SearchToolbar";
@@ -32,31 +24,13 @@ export default {
   data() {
     return {
       nodes: taskTree,
-      searchStr: '',
-      expandedKeys: [],
+      filterText: '',
     };
   },
 
   methods: {
     onSearch(val) {
-      if (searchStart(val, this.searchStr)) {
-        this.expandedKeys = saveExpandedKeys(this.$refs.tree.store.nodesMap);
-      }
-
-      if (searchEnd(val, this.searchStr)) {
-        restoreExpandedKeys(
-          this.$refs.tree.store.nodesMap,
-          this.expandedKeys
-        );
-      }
-
-      this.searchStr = val;
-      this.$refs.tree.filter(val);
-    },
-
-    onFilterNode(val, data) {
-      if (!val) return true;
-      return data.label.toLocaleLowerCase().includes(val.toLocaleLowerCase());
+      this.filterText = val;
     },
 
     renderTreeIcon(h, { node, data }) {
