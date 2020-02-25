@@ -19,9 +19,9 @@
 </template>
 
 <script>
-import NavHeader from "@/components/NavHeader";
-import Sidebar from "@/components/Sidebar";
-import Breadcrumb from "@/components/Breadcrumb";
+import NavHeader from "components/NavHeader";
+import Sidebar from "components/Sidebar";
+import Breadcrumb from "components/Breadcrumb";
 
 export default {
   components: {

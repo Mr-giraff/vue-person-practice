@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import HeaderLogo from "@/components/GlobalHeader/HeaderLogo";
-import HeaderMenu from "@/components/GlobalHeader/HeaderMenu";
-import HeaderUser from "@/components/GlobalHeader/HeaderUser";
+import HeaderLogo from "components/GlobalHeader/HeaderLogo";
+import HeaderMenu from "components/GlobalHeader/HeaderMenu";
+import HeaderUser from "components/GlobalHeader/HeaderUser";
 
 export default {
   components: {
