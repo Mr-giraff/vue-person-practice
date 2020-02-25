@@ -1,11 +1,7 @@
 <template>
   <div class="table-row-action">
     <template v-for="item in actions">
-      <el-dropdown
-        v-if="item.children"
-        :key="item.action"
-        @command="onAction($event, row)"
-      >
+      <el-dropdown v-if="item.children" :key="item.action" @command="onAction">
         <el-button
           type="text"
           v-bind="item"
@@ -54,7 +50,7 @@ export default {
 
   methods: {
     onAction(action) {
-      this.$emit("action", action);
+      this.$emit("action", action, this.row);
     }
   }
 };
