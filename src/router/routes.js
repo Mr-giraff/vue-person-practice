@@ -22,32 +22,42 @@
   }
  */
 
-import Home from "../views/Home.vue";
 import Child from "../views/Child";
 
 import BasicLayout from "@/layout/BasicLayout";
 import BlankLayout from "@/layout/BlankLayout";
 
+import dev from "./modules/dev";
+
 export const routes = [
   {
     path: "/",
-    redirect: "/dashboard",
-    component: BlankLayout
-    // meta: {
-    //   title: "home",
-    //   icon: "home"
-    // }
+    component: BasicLayout,
+    redirect: "/dev",
+    children: [
+      {
+        path: "child2",
+        name: "child2",
+        component: Child,
+        meta: {
+          title: "child2",
+          icon: "child2",
+          blank: true
+        }
+      },
+      dev
+    ]
   },
-  {
-    path: "/home",
-    name: "home",
-    component: Home,
-    meta: {
-      title: "home",
-      icon: "home",
-      hidden: true
-    }
-  },
+
+  // {
+  //   path: "/",
+  //   redirect: "/dashboard",
+  //   component: BlankLayout,
+  //   meta: {
+  //     hidden: true
+  //   }
+  // },
+
   {
     path: "/dashboard",
     name: "dashboard",
