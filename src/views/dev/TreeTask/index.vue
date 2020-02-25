@@ -38,7 +38,7 @@ export default {
 
       if (node.isLeaf) {
         const icon =
-          findValue(FILETYPE, data.id, "value", "icon") || "el-icon-delete";
+          findValue(FILETYPE, data.id, "value", "icon") || "el-icon-document";
 
         result.push(
           h("el-icon", {
@@ -48,7 +48,7 @@ export default {
       } else {
         result.push(
           h("el-icon", {
-            class: "el-icon-files"
+            class: node.expanded ? "el-icon-folder-opened" : "el-icon-folder"
           })
         );
       }
