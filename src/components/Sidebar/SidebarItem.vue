@@ -1,24 +1,16 @@
 <template>
-  <div v-if="visible">
-    <el-submenu v-if="hasVisibleChild(children)" :index="currentPath">
-      <Item v-bind="meta" />
-      <sidebar-item
-        v-for="child in children"
-        v-bind="child"
-        :key="child.path"
-        :parentPath="currentPath"
-      />
-    </el-submenu>
+  <el-submenu v-if="hasChild" :index="path">
+    <Item v-bind="meta" />
+    <sidebar-item v-for="child in children" v-bind="child" :key="child.path" />
+  </el-submenu>
 
-    <el-menu-item v-else :index="currentPath">
-      <Item v-bind="meta" />
-    </el-menu-item>
-  </div>
+  <el-menu-item v-else :index="path">
+    <Item v-bind="meta" />
+  </el-menu-item>
 </template>
 
 <script>
 import Item from "./Item";
-import { isVisible } from "@/utils/route";
 
 export default {
   name: "SidebarItem",
@@ -28,26 +20,13 @@ export default {
   inheritAttrs: false,
   props: {
     path: String,
-    name: String,
     children: Array,
-    meta: Object,
-    parentPath: String // 父级路径
+    meta: Object
   },
+
   computed: {
-    currentPath() {
-      return this.resolvePath(this.parentPath, this.path);
-    },
-    visible() {
-      return isVisible(this.meta);
-    }
-  },
-  methods: {
-    resolvePath(parentPath, path) {
-      return /^\//.test(path) ? path : `${parentPath}/${path}`;
-    },
-    hasVisibleChild(children) {
-      if (!Array.isArray(children)) return false;
-      return children.some(child => isVisible(child.meta));
+    hasChild() {
+      return Array.isArray(this.children) && this.children.length > 0;
     }
   }
 };

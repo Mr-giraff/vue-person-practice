@@ -1,5 +1,5 @@
-export function isVisible(meta) {
-  return !(meta && meta.hidden);
+export function isVisible(menu) {
+  return !(menu && menu.hidden);
 }
 
 export function isVisibleBreadcrumb(meta) {
@@ -8,6 +8,10 @@ export function isVisibleBreadcrumb(meta) {
 
 export function isVisibleWholeBreadcrumb(meta) {
   return !(meta && meta.hideWholeBreadcrumb);
+}
+
+export function hasChildren({ children }) {
+  return Array.isArray(children) && children.length > 0;
 }
 
 /**
@@ -80,4 +84,51 @@ export function normalizePath(path, parent) {
   if (!parent) return path;
   // 如果以前条件都不满足，那么返回
   return `${parent.path}/${path}`;
+}
+
+// eslint-disable-next-line no-useless-escape
+const regUrl = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
+
+export function isUrl(path) {
+  return regUrl.test(path);
+}
+
+const regAbsolutePath = /^\//;
+
+export function isAbsolutePath(path) {
+  return regAbsolutePath.test(path);
+}
+
+// 统一使用相对路径
+export function formatter(routes, parentPath = "/") {
+  return routes.map(item => {
+    let { path } = item;
+    if (!isUrl(path)) {
+      // 处理 path: '' 引发的 '//' 问题
+      path = (parentPath + path).replace(/\/\//, "/");
+    }
+    const result = {
+      ...item,
+      path
+    };
+    if (item.children) {
+      result.children = formatter(item.children, `${path}/`);
+    }
+    return result;
+  });
+}
+
+export function getActiveMenus(menus) {
+  let result = [];
+  menus.forEach(menu => {
+    if (!isVisible(menu)) return;
+
+    const record = {
+      ...menu,
+      children: hasChildren(menu) ? getActiveMenus(menu.children) : []
+    };
+
+    result.push(record);
+  });
+  return result;
 }
